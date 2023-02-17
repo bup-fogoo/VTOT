@@ -1,0 +1,12 @@
+version: '3'
+services:
+  civil:
+    build: ./
+    image: vtot/golang:1.1
+    container_name: vtot_container
+    restart: always
+    ports:
+      - "18888:12333"
+networks:
+  test-net:
+    driver: bridge

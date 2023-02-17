@@ -1,4 +1,3 @@
-#FROM python:3.8-slim
 FROM golang:latest
 
 MAINTAINER foo
@@ -8,19 +7,10 @@ COPY . $GOPATH/go
 COPY go.mod ./
 COPY go.sum ./
 COPY * ./
+RUN go env -w GO111MODULE=auto
+RUN go env -w GOPROXY=https://goproxy.cn,direct
+RUN go build -mod=mod main.go
 
 
-RUN apt-get update && \
-    apt-get install vim -y
-
-#RUN pip install aliyun-python-sdk-core==2.13.3 -i https://mirrors.aliyun.com/pypi/simple/ &&\
-#    pip install requests &&\
-RUN go env -w GO111MODULE=auto &&\
-    go env -w GOPROXY=https://goproxy.cn,direct &&\
-    go build -mod=mod main.go
-
-
-EXPOSE 8080
-
-
+EXPOSE 12333
 CMD ["./main"]

@@ -103,7 +103,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .uploader #file-image {
+    .uploader #file-msg {
         display: inline;
         margin: 0 auto 0.5rem auto;
         width: auto;
@@ -111,18 +111,18 @@
         max-width: 180px;
     }
 
-    .uploader #file-image.hidden {
+    .uploader #file-msg.hidden {
         display: none;
     }
 
-    .uploader #notimage {
+    .uploader #notallow {
         display: block;
         float: left;
         clear: both;
         width: 100%;
     }
 
-    .uploader #notimage.hidden {
+    .uploader #notallow.hidden {
         display: none;
     }
 
@@ -194,14 +194,14 @@
 
 <!-- Upload  -->
 <form id="file-upload-form" class="uploader">
-    <input id="file-upload" type="file" name="fileUpload" accept="image/*"/>
+    <input id="file-upload" type="file" name="fileUpload"/>
 
     <label for="file-upload" id="file-drag">
-        <img id="file-image" src="#" alt="Preview" class="hidden">
+        <p id="file-msg" class="hidden">OK</p>
         <div id="start">
             <i class="fa fa-download" aria-hidden="true"></i>
             <div>Select a file or drag here</div>
-            <div id="notimage" class="hidden">Please select an image</div>
+            <div id="notallow" class="hidden">Please select an audio or video</div>
             <span id="file-upload-btn" class="btn btn-primary">Select a file</span>
         </div>
         <div id="response" class="hidden">
@@ -278,17 +278,17 @@
             // console.log(fileType);
             var imageName = file.name;
 
-            var isGood = /\.(?=gif|jpg|png|jpeg)/gi.test(imageName);
+            var isGood = /\.(?=mp3|mp4|wav)/gi.test(imageName);
             if (isGood) {
                 document.getElementById("start").classList.add("hidden");
                 document.getElementById("response").classList.remove("hidden");
-                document.getElementById("notimage").classList.add("hidden");
+                document.getElementById("notallow").classList.add("hidden");
                 // Thumbnail Preview
-                document.getElementById("file-image").classList.remove("hidden");
-                document.getElementById("file-image").src = URL.createObjectURL(file);
+                document.getElementById("file-msg").classList.remove("hidden");
+                document.getElementById("file-msg").src = URL.createObjectURL(file);
             } else {
-                document.getElementById("file-image").classList.add("hidden");
-                document.getElementById("notimage").classList.remove("hidden");
+                document.getElementById("file-msg").classList.add("hidden");
+                document.getElementById("notallow").classList.remove("hidden");
                 document.getElementById("start").classList.remove("hidden");
                 document.getElementById("response").classList.add("hidden");
                 document.getElementById("file-upload-form").reset();
