@@ -3,7 +3,7 @@ services:
   civil:
     build: ./
     image: vtot/golang:1.1
-    container_name: vtot_container
+    container_name: vtot
     restart: always
     ports:
       - "18888:12333"

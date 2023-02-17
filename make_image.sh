@@ -1,0 +1,1 @@
+docker build -t foo/vtot:1.1.1 .

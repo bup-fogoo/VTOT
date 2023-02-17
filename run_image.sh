@@ -1,0 +1,1 @@
+docker run  -tid --name vtot -p 18888:12333 foo/vtot:1.1.1
