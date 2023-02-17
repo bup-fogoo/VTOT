@@ -4,7 +4,6 @@ import (
 	"VTOT/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -46,7 +45,7 @@ func main() {
 		}
 
 		basePath := "./tmp/"
-		filename := basePath + filepath.Base(file.Filename)
+		filename := filepath.Join(basePath, filepath.Base(file.Filename))
 		if err := c.SaveUploadedFile(file, filename); err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 			return
@@ -60,15 +59,10 @@ func main() {
 			vtotmp3 += service.VideoToAudioService(filename)
 		}
 		/*   worker  */
-		// 音频结果输出格式
-		tmpFileName := uuid.New().ID()
-		outFilePath := fmt.Sprintf("./tmp/%d.html", tmpFileName)
-		c.String(http.StatusMovedPermanently, fmt.Sprintf("\r\n\r\n转文字已成功请访问下面跟目录（需要等几分钟）\r\n/tmp/%d.html\r\n\r\n\r\n如果没有请刷新网页或者重新上传", tmpFileName))
-
 		fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
 		//fileLink := fmt.Sprintf("http://114.116.37.179/upload/%s", vtotmp3)
 		wg.Add(1)
-		go service.Worker(fileLink, outFilePath, ch, &wg)
+		go service.Worker(fileLink, ch, &wg)
 
 	})
 	err := router.Run(":8080")
