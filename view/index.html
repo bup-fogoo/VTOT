@@ -365,13 +365,16 @@
                             document.getElementById("result-text").style.display = "block";
                             const rt = document.getElementById('result-text');
                             const data = JSON.parse(xhr.responseText);
-                            const startTime = data["RequestTime"]
-                            const endTime = data["SolveTime"]
-                            const text = data["Result"]["Sentences"][0]["Text"]
-                            var htmlData = ""
-                            htmlData += "<p>" + "START TIME:" + formatDate(startTime) + " END TIME:" + formatDate(endTime) + "</p>"
-                            htmlData += "<pre>" + text + "</pre>"
-                            rt.innerHTML = htmlData;
+                            if (data["StatusText"] === "SUCCESS"){
+                                const startTime = data["RequestTime"]
+                                const endTime = data["SolveTime"]
+                                const text = data["Result"]["Sentences"][0]["Text"]
+                                var htmlData = ""
+                                htmlData += "<p>" + "START TIME:" + formatDate(startTime) + " END TIME:" + formatDate(endTime) + "</p>"
+                                htmlData += "<pre>" + text + "</pre>"
+                                rt.innerHTML = htmlData;
+                            }
+                            rt.innerHTML = "Please refresh and try again.";
                             document.getElementById("spinner").style.display = "none";
                             // Everything is good!
                             // progress.className = (xhr.status == 200 ? "success" : "failure");
