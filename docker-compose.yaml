@@ -4,6 +4,8 @@ services:
     build: .
     image: vtot/golang:1.1
     container_name: vtot
+    volumes:
+      - "/tmp/:/VTOT/tmp/"
     restart: always
     ports:
       - "18888:12333"

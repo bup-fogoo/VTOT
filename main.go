@@ -52,13 +52,13 @@ func main() {
 		//c.String(http.StatusOK, fmt.Sprintf("file %s upload to /tmp success ", file.Filename))
 
 		// 处理视频，video to mp3
-		vtotmp3 := ""
 		if extString == ".mp4" {
-			vtotmp3 += service.VideoToAudioService(filename)
+			file.Filename = service.VideoToAudioService(filename)
 		}
 		/*   worker  */
 		//fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
-		fileLink := fmt.Sprintf("http://114.116.37.179/tmp/%s", vtotmp3)
+		fileLink := fmt.Sprintf("http://114.116.37.179/tmp/%s", file.Filename)
+
 		res := service.Worker(fileLink)
 		if res == nil {
 			c.JSON(http.StatusInternalServerError, res)

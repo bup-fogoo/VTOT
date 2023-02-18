@@ -38,9 +38,9 @@ func Worker(fileLink string) map[string]interface{} {
 	const STATUS_SUCCESS string = "SUCCESS"
 	const STATUS_RUNNING string = "RUNNING"
 	const STATUS_QUEUEING string = "QUEUEING"
-	var accessKeyId string = "LTAI5tBsLQKQSp7x5fVPeK31" //获取AccessKey ID和AccessKey Secret请前往控制台：https://ram.console.aliyun.com/manage/ak
-	var accessKeySecret string = "NsQ1oRyngYtf0CeNTex91N1Nw6g3N4"
-	var appKey string = "myXjvilkzWXzvKUY" //获取Appkey请前往控制台：https://nls-portal.console.aliyun.com/applist
+	var accessKeyId string = "" //获取AccessKey ID和AccessKey Secret请前往控制台：https://ram.console.aliyun.com/manage/ak
+	var accessKeySecret string = ""
+	var appKey string = "" //获取Appkey请前往控制台：https://nls-portal.console.aliyun.com/applist
 	client, err := sdk.NewClientWithAccessKey(REGION_ID, accessKeyId, accessKeySecret)
 	if err != nil {
 		panic(err)
