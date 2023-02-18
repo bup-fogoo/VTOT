@@ -61,7 +61,6 @@ func main() {
 		*/
 		//fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
 		fileLink := fmt.Sprintf("%stmp/%s", viper.GetString("vps"), file.Filename)
-
 		res := service.Worker(fileLink)
 		if res == nil {
 			c.JSON(http.StatusInternalServerError, res)

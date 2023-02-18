@@ -2,9 +2,9 @@
 server:
   port: 12333
 
-vps: http://114.116.37.179/
+vps: http://192.168.1.1:18888/
 
 aliCloudSdk:
-  apikey:
-  accessKeyID:
-  accessKeySecret:
+  appKey: myXjvilkzWXzvKU0
+  accessKeyID: LTAI5tBsLQKQSp7x5fVPeK36
+  accessKeySecret: NsQ1oRyngYtf0CeNTex91N1Nw6g3N8
