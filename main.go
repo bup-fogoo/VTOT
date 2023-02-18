@@ -57,8 +57,8 @@ func main() {
 			vtotmp3 += service.VideoToAudioService(filename)
 		}
 		/*   worker  */
-		fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
-		//fileLink := fmt.Sprintf("http://114.116.37.179/upload/%s", vtotmp3)
+		//fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
+		fileLink := fmt.Sprintf("http://114.116.37.179/tmp/%s", vtotmp3)
 		res := service.Worker(fileLink)
 		if res == nil {
 			c.JSON(http.StatusInternalServerError, res)
