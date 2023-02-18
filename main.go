@@ -8,12 +8,9 @@ import (
 	"path"
 	"path/filepath"
 	"strings"
-	"sync"
 )
 
 func main() {
-	var wg sync.WaitGroup
-	ch := make(chan struct{}, 2)
 	router := gin.Default()
 	// 加载 静态资源
 	router.Static("/tmp", "./tmp/")
@@ -26,7 +23,7 @@ func main() {
 	router.MaxMultipartMemory = 8 << 20 // 8 MiB, default 32 MiB
 
 	router.POST("/upload", func(c *gin.Context) {
-		file, err := c.FormFile("file")
+		file, err := c.FormFile("fileUpload")
 		if err != nil {
 			c.String(http.StatusBadRequest, fmt.Sprintf("get form err: %s", err.Error()))
 			return
@@ -50,8 +47,9 @@ func main() {
 			c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 			return
 		}
+		//c.JSON(http.StatusOK, gin.H{"result": file.Filename})
 
-		c.String(http.StatusOK, fmt.Sprintf("file %s upload to /tmp success ", file.Filename))
+		//c.String(http.StatusOK, fmt.Sprintf("file %s upload to /tmp success ", file.Filename))
 
 		// 处理视频，video to mp3
 		vtotmp3 := ""
@@ -61,8 +59,12 @@ func main() {
 		/*   worker  */
 		fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
 		//fileLink := fmt.Sprintf("http://114.116.37.179/upload/%s", vtotmp3)
-		wg.Add(1)
-		go service.Worker(fileLink, ch, &wg)
+		res := service.Worker(fileLink)
+		if res == nil {
+			c.JSON(http.StatusInternalServerError, res)
+			return
+		}
+		c.JSON(http.StatusOK, res)
 
 	})
 	err := router.Run(":12333")

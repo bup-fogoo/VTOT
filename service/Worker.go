@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk"
 	"github.com/aliyun/alibaba-cloud-sdk-go/sdk/requests"
-	"sync"
 	"time"
 )
 
@@ -15,12 +14,7 @@ import (
  *@description: audio to text.
  */
 
-func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
-	// 等待 channel 可用
-	ch <- struct{}{}
-
-	defer wg.Done()
-
+func Worker(fileLink string) map[string]interface{} {
 	// worker
 	// 地域ID，固定值。
 	const REGION_ID string = "cn-shanghai"
@@ -44,9 +38,9 @@ func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
 	const STATUS_SUCCESS string = "SUCCESS"
 	const STATUS_RUNNING string = "RUNNING"
 	const STATUS_QUEUEING string = "QUEUEING"
-	var accessKeyId string = "" //获取AccessKey ID和AccessKey Secret请前往控制台：https://ram.console.aliyun.com/manage/ak
-	var accessKeySecret string = ""
-	var appKey string = "" //获取Appkey请前往控制台：https://nls-portal.console.aliyun.com/applist
+	var accessKeyId string = "LTAI5tBsLQKQSp7x5fVPeK31" //获取AccessKey ID和AccessKey Secret请前往控制台：https://ram.console.aliyun.com/manage/ak
+	var accessKeySecret string = "NsQ1oRyngYtf0CeNTex91N1Nw6g3N4"
+	var appKey string = "myXjvilkzWXzvKUY" //获取Appkey请前往控制台：https://nls-portal.console.aliyun.com/applist
 	client, err := sdk.NewClientWithAccessKey(REGION_ID, accessKeyId, accessKeySecret)
 	if err != nil {
 		panic(err)
@@ -76,7 +70,7 @@ func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
 	postResponseContent := postResponse.GetHttpContentString()
 	if postResponse.GetHttpStatus() != 200 {
 		fmt.Println("录音文件识别请求失败，Http错误码: ", postResponse.GetHttpStatus())
-		return
+		return nil
 	}
 	var postMapResult map[string]interface{}
 	err = json.Unmarshal([]byte(postResponseContent), &postMapResult)
@@ -92,7 +86,7 @@ func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
 		taskId = postMapResult[KEY_TASK_ID].(string)
 	} else {
 		fmt.Println("录音文件识别请求失败!")
-		return
+		return nil
 	}
 	getRequest := requests.NewCommonRequest()
 	getRequest.Domain = DOMAIN
@@ -122,7 +116,8 @@ func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
 		if statusText == STATUS_RUNNING || statusText == STATUS_QUEUEING {
 			time.Sleep(10 * time.Second)
 		} else {
-			break
+			return getMapResult
+			//break
 		}
 	}
 	if statusText == STATUS_SUCCESS {
@@ -130,6 +125,5 @@ func Worker(fileLink string, ch chan struct{}, wg *sync.WaitGroup) {
 	} else {
 		fmt.Println("录音文件识别失败！")
 	}
-	// 从channel 中取出信号
-	<-ch
+	return nil
 }
