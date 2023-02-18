@@ -1,0 +1,10 @@
+# 服务器端口，不写则是默认8080
+server:
+  port: 12333
+
+vps: http://114.116.37.179/
+
+aliCloudSdk:
+  apikey:
+  accessKeyID:
+  accessKeySecret:

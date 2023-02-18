@@ -4,13 +4,16 @@ import (
 	"VTOT/service"
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/spf13/viper"
 	"net/http"
+	"os"
 	"path"
 	"path/filepath"
 	"strings"
 )
 
 func main() {
+	InitConfig()
 	router := gin.Default()
 	// 加载 静态资源
 	router.Static("/tmp", "./tmp/")
@@ -47,17 +50,17 @@ func main() {
 			c.String(http.StatusBadRequest, fmt.Sprintf("upload file err: %s", err.Error()))
 			return
 		}
-		//c.JSON(http.StatusOK, gin.H{"result": file.Filename})
-
-		//c.String(http.StatusOK, fmt.Sprintf("file %s upload to /tmp success ", file.Filename))
 
 		// 处理视频，video to mp3
 		if extString == ".mp4" {
 			file.Filename = service.VideoToAudioService(filename)
 		}
-		/*   worker  */
+		/*
+			worker
+			可以存自己的服务器，可以存阿里云空间，我这里是存的自己的服务器
+		*/
 		//fileLink := "https://gw.alipayobjects.com/os/bmw-prod/0574ee2e-f494-45a5-820f-63aee583045a.wav"
-		fileLink := fmt.Sprintf("http://114.116.37.179/tmp/%s", file.Filename)
+		fileLink := fmt.Sprintf("%stmp/%s", viper.GetString("vps"), file.Filename)
 
 		res := service.Worker(fileLink)
 		if res == nil {
@@ -67,8 +70,21 @@ func main() {
 		c.JSON(http.StatusOK, res)
 
 	})
-	err := router.Run(":12333")
+	// 启动HTTP服务,默认在0.0.0.0:8080启动服务
+	port := viper.GetString("server.port")
+	if port != "" {
+		panic(router.Run(":" + port))
+	}
+	panic(router.Run())
+}
+
+func InitConfig() {
+	workDir, _ := os.Getwd()
+	viper.SetConfigName("application")
+	viper.SetConfigType("yml")
+	viper.AddConfigPath(workDir + "/config")
+	err := viper.ReadInConfig()
 	if err != nil {
-		return
+		panic(err)
 	}
 }
