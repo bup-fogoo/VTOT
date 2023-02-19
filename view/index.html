@@ -236,7 +236,7 @@
             </progress>
         </div>
     </label>
-    <label class="file-upload" id="result-text" style="display: none;"></label>
+    <label class="file-upload" id="result-text" style="display: none;" onclick="copyfun()"></label>
 </form>
 
 <div class="spinner" id="spinner" style="display: none;"></div>
@@ -247,9 +247,8 @@
     // File Upload
     //
 
-    function formatDate(date) {
-        return new Date(date).toLocaleString();
-
+    function copyfun() {
+        alert(document.getElementById("result-text").innerHTML);
     }
 
     function ekUpload() {
@@ -366,13 +365,11 @@
                             const rt = document.getElementById('result-text');
                             const data = JSON.parse(xhr.responseText);
                             if (data["StatusText"] === "SUCCESS") {
-                                const startTime = data["RequestTime"]
-                                const endTime = data["SolveTime"]
-                                const text = data["Result"]["Sentences"][0]["Text"]
-                                var htmlData = ""
-                                htmlData += "<p>" + "START TIME:" + formatDate(startTime) + " END TIME:" + formatDate(endTime) + "</p>"
-                                htmlData += "<pre>" + text + "</pre>"
-                                rt.innerHTML = htmlData;
+                                var text = ""
+                                for (var i = 0; i < data["Result"]["Sentences"].length; i++) {
+                                    text += data["Result"]["Sentences"][i]["Text"]
+                                }
+                                rt.innerHTML = text;
                             } else {
                                 rt.innerHTML = "Please refresh and try again.";
                             }
